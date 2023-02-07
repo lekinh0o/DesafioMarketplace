@@ -6,5 +6,7 @@ import com.frwk.marketplace.customer.model.Customer;
 
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
+    Customer findByIdentificationCode(String code);
+
 
 }
