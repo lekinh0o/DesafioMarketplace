@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import com.frwk.marketplace.core.exceptions.InvalidClientException;
 import com.frwk.marketplace.customer.dto.CustomerDTO;
 
 import io.swagger.annotations.Api;
@@ -20,7 +21,7 @@ public interface CustomerApi {
                         @ApiResponse(code = 412, message = "Dados obrigatórios faltando ou incorretos."),
                         @ApiResponse(code = 412, message = "Cliente não informado")
         })
-        ResponseEntity<CustomerDTO> createCustomer(@RequestBody @Validated CustomerDTO customerDTO) throws Exception;
+        ResponseEntity<CustomerDTO> createCustomer(@RequestBody @Validated CustomerDTO customerDTO) throws InvalidClientException;
 
 
 }

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.frwk.marketplace.core.exceptions.InvalidClientException;
 import com.frwk.marketplace.customer.dto.CustomerDTO;
 import com.frwk.marketplace.customer.service.CustomerService;
 
@@ -23,7 +24,7 @@ public class CustomerController implements CustomerApi {
 
     @Override
     @PostMapping()
-    public ResponseEntity<CustomerDTO> createCustomer(@RequestBody @Validated CustomerDTO customerDTO) throws Exception {
+    public ResponseEntity<CustomerDTO> createCustomer(@RequestBody @Validated CustomerDTO customerDTO) throws InvalidClientException {
         return new ResponseEntity<>(this.service.createCustomer(customerDTO), HttpStatus.CREATED);
     }
 
