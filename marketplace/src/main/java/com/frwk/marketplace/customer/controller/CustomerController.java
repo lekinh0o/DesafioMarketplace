@@ -24,6 +24,7 @@ import lombok.AllArgsConstructor;
 @RequestMapping("/api/v1/marketplace/cliente")
 @AllArgsConstructor
 public class CustomerController implements CustomerApi {
+   
     @Autowired
     private final CustomerService service;
 

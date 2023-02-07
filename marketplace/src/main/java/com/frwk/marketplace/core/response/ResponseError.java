@@ -15,7 +15,7 @@ public class ResponseError  {
 
     private String type;
    
-    private String messagem;
+    private String message;
 
     @Builder.Default
     private List<ErrorObject> erros = new ArrayList<>();

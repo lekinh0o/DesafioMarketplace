@@ -13,6 +13,6 @@ public class ErrorObject {
 
     private final String field;
     
-    private final String erro;
+    private final String error;
 
 }

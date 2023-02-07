@@ -20,7 +20,6 @@ import com.frwk.marketplace.core.exceptions.InvalidClientException;
 import com.frwk.marketplace.core.exceptions.InvalidFormatException;
 import com.frwk.marketplace.core.exceptions.InvalidProductException;
 import com.frwk.marketplace.core.response.ErrorObject;
-import com.frwk.marketplace.core.response.Response;
 import com.frwk.marketplace.core.response.ResponseError;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -32,18 +31,18 @@ public class RestExceptionHandler  {
         List<ErrorObject> errors = ex.getBindingResult().getAllErrors().stream()
                 .map(err -> this.parseFieldErrorToBaseError((FieldError) err))
                 .collect(Collectors.toList());
-        Response<Object> response = new Response<>();
-        response.setContent(ResponseError.builder().type(
+    
+        Object response = ResponseError.builder().type(
                         "ModelValidationException")
-                        .messagem("Dados enviados inválidos").erros(errors).build());
+                        .message("Dados enviados inválidos").erros(errors).build();
         return new ResponseEntity<>(response,HttpStatus.PRECONDITION_FAILED);
     }
 
     @ExceptionHandler(InvalidFormatException.class)
     public ResponseEntity<Object> handleValidationExceptions(InvalidFormatException ex) {
-        Response<Object> response = new Response<>();
-        response.setContent(ResponseError.builder().type(ex.getCause().toString()).messagem("ModelValidationException")
-                        .erros(Collections.singletonList(ErrorObject.builder().field(ex.getField()).erro(ex.getMessage()).build())));
+       
+          Object response = ResponseError.builder().type(ex.getCause().toString()).message("ModelValidationException")
+                        .erros(Collections.singletonList(ErrorObject.builder().field(ex.getField()).error(ex.getMessage()).build()));
         return new ResponseEntity<>(response, HttpStatus.PRECONDITION_FAILED);
     }
 
@@ -68,13 +67,13 @@ public class RestExceptionHandler  {
     }
 
     private ResponseEntity<Object> handleBaseException(GeneralException ex) {
-        Response<Object> response = new Response<>();
-        response.setContent(ResponseError.builder().type(ex.getType()).messagem(ex.getMessage()).build());
+        
+          Object response = ResponseError.builder().type(ex.getType()).message(ex.getMessage()).build();
         return new ResponseEntity<>(response,HttpStatus.PRECONDITION_FAILED);
     }
 
     private ErrorObject parseFieldErrorToBaseError(FieldError error) {
-        return ErrorObject.builder().field(error.getField()).erro(error.getDefaultMessage()).build();
+        return ErrorObject.builder().field(error.getField()).error(error.getDefaultMessage()).build();
     }
   
 
