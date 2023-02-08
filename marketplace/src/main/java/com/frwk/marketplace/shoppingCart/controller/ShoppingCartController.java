@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.frwk.marketplace.core.exceptions.InvalidCartException;
 import com.frwk.marketplace.core.exceptions.InvalidClientException;
 import com.frwk.marketplace.customer.dto.CustomerDTO;
+import com.frwk.marketplace.product.dto.ProductCreateDTO;
 import com.frwk.marketplace.shoppingCart.dto.ShoppingCartCreatedDTO;
 import com.frwk.marketplace.shoppingCart.model.enums.StatusCart;
 import com.frwk.marketplace.shoppingCart.service.ShoppingCartService;
@@ -33,5 +35,12 @@ public class ShoppingCartController implements ShoppingCartApi {
                  return new ResponseEntity<>(shoppingcart, isNew ? HttpStatus.CREATED : HttpStatus.OK);
     }
 
+    @Override
+    @PostMapping("/produto")
+    public ResponseEntity<Void> includeproductInCart(@RequestBody @Validated ProductCreateDTO productCreateDTO)
+            throws InvalidCartException {
+        this.shoppingCartService.includeproductInCart(productCreateDTO);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
 }
