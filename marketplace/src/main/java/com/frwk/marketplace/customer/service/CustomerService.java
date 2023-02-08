@@ -23,11 +23,10 @@ public class CustomerService {
     public CustomerDTO createCustomer(CustomerDTO customerDTO) throws InvalidClientException {
         this.verifyIfIsAlreadyRegistered(customerDTO.getCpf());
         Customer customer = this.mapper.mapDTOFromEntity(customerDTO);
-        Customer savedCustomer = this.repository.save(customer);
-        return this.mapper.mapEntityFromDTO(savedCustomer);
+        return this.mapper.mapEntityFromDTO(this.repository.save(customer));
     }
 
-    private void verifyIfIsAlreadyRegistered(String code) throws InvalidClientException {
+    public void verifyIfIsAlreadyRegistered(String code) throws InvalidClientException {
         Customer optSaved = repository.findByIdentificationCode(code);
         if (optSaved != null) {
             throw new InvalidClientException(String.format("Cliente com CPF %s já cadastrado no sistema.", code));
@@ -41,13 +40,16 @@ public class CustomerService {
             customer.setBirthDate(customerDTO.getDataNascimento());
             customer.setEmail(customerDTO.getEmail());
             this.repository.save(customer);
-            return customerDTO;
+            return this.mapper.mapEntityFromDTO(this.repository.save(customer));
         }
         throw new InvalidClientException("Cliente não esta cadastrado na sistema");
     }
 
-    public CustomerDTO findByIdentificationCode(String code) {
+    public CustomerDTO findByIdentificationCode(String code) throws InvalidClientException {
         Customer customer = this.repository.findByIdentificationCode(code);
+        if (customer == null) {
+            throw new InvalidClientException("Cliente não esta cadastrado na sistema");
+        }
         return this.mapper.mapEntityFromDTO(customer);
     }
 

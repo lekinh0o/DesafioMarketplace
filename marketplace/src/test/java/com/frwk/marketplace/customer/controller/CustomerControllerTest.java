@@ -53,7 +53,7 @@ public class CustomerControllerTest {
     @Test
     void whenItsAVaildCustomerPost() throws Exception {
 
-        CustomerDTO customerDTO = Creators.createValidClient();
+        CustomerDTO customerDTO = Creators.createValidCustomerDTO();
         Mockito.when(this.customerService.createCustomer(ArgumentMatchers.any())).thenReturn(customerDTO);
         this.mockMvc.perform(post(
                 API)
@@ -70,7 +70,7 @@ public class CustomerControllerTest {
     @Test
     void whenItsAVaildCustomerPut() throws Exception {
 
-        CustomerDTO customerDTO = Creators.createValidClient();
+        CustomerDTO customerDTO = Creators.createValidCustomerDTO();
         Mockito.when(this.customerService.save(ArgumentMatchers.any())).thenReturn(customerDTO);
 
         this.mockMvc.perform(put(
@@ -87,7 +87,7 @@ public class CustomerControllerTest {
     @Test
     void whenItsAVaildCustomerCPFGet() throws Exception {
 
-        CustomerDTO customerDTO = Creators.createValidClient();
+        CustomerDTO customerDTO = Creators.createValidCustomerDTO();
         Mockito.when(this.customerService.findByIdentificationCode(ArgumentMatchers.any())).thenReturn(customerDTO);
 
         this.mockMvc.perform(get(API+"/"+customerDTO.getCpf())
@@ -103,7 +103,7 @@ public class CustomerControllerTest {
     @Test
     void whenItsAVaildCustomerListGet() throws Exception {
         List<CustomerDTO> customersList = new ArrayList<CustomerDTO>();
-        customersList.add(Creators.createValidClient());
+        customersList.add(Creators.createValidCustomerDTO());
         Mockito.when(this.customerService.listCustomers()).thenReturn(customersList);
 
         this.mockMvc.perform(get(API)
@@ -118,7 +118,7 @@ public class CustomerControllerTest {
     
     @Test
     void whenPostCustomerCpfInvalide() throws Exception {
-        CustomerDTO customerDTO = Creators.createInvalidClientCPF();
+        CustomerDTO customerDTO = Creators.createCustomerDTOInvalidCPF();
         this.mockMvc.perform(post(API)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(MappingJsonConvertion.objectMapper(customerDTO)))
