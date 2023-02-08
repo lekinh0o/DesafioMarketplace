@@ -2,6 +2,9 @@ package com.frwk.marketplace.shoppingCart.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,14 +21,19 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
+import com.frwk.marketplace.core.exceptions.InvalidCartException;
 import com.frwk.marketplace.core.exceptions.InvalidClientException;
 import com.frwk.marketplace.core.exceptions.handler.RestExceptionHandler;
 import com.frwk.marketplace.customer.dto.CustomerDTO;
 import com.frwk.marketplace.customer.mappers.CustomerMapper;
 import com.frwk.marketplace.customer.model.Customer;
 import com.frwk.marketplace.customer.service.CustomerService;
+import com.frwk.marketplace.product.dto.ProductCreateDTO;
+import com.frwk.marketplace.product.model.Product;
+import com.frwk.marketplace.product.service.ProductService;
 import com.frwk.marketplace.shoppingCart.dto.ShoppingCartCreatedDTO;
 import com.frwk.marketplace.shoppingCart.model.ShoppingCart;
+import com.frwk.marketplace.shoppingCart.model.ShoppingCartItens;
 import com.frwk.marketplace.shoppingCart.model.enums.StatusCart;
 import com.frwk.marketplace.shoppingCart.repository.ShoppingCartRepository;
 import com.frwk.marketplace.util.Creators;
@@ -43,10 +51,16 @@ public class ShoppingCartServiceTest {
     private CustomerService customerService;
 
     @Mock
+    private ShoppingCartItensService itensService;
+    
+    @Mock
+    private ProductService productService;
+    @Mock
     private ShoppingCartRepository  shopCartRepository;
 
     @Mock
     private CustomerMapper customerMapper;
+
 
     @BeforeEach
     void setUp() {
@@ -117,5 +131,54 @@ public class ShoppingCartServiceTest {
                () -> this.shopCartService.createShoppingCart(customerDTO));
    }
 
+   @Test
+   void whenPostincludeproductInCart() throws Exception {
+       Product produto = Creators.createProduto();
+       ShoppingCart shoppingCart = Creators.shoppingCartAndProductCart(StatusCart.OPEN);
+       Mockito.when(this.shopCartRepository.findById(ArgumentMatchers.any())).thenReturn(Optional.of(shoppingCart));
+       Mockito.when(this.productService.findById(ArgumentMatchers.any())).thenReturn(Optional.of(produto));
+       Mockito.when(this.itensService.findAllItensByShoppingCart(ArgumentMatchers.any()))
+               .thenReturn(shoppingCart.getItens());
+       ProductCreateDTO productCreateDTO = Creators.productCreateDTO(shoppingCart);
+      this.shopCartService.includeproductInCart(productCreateDTO);
+       Mockito.verify(this.itensService, Mockito.times(1)).saveCartItem(shoppingCart.getItens().get(0));
+   }
 
+   @Test
+   void whenPostincludeproductInCartNewAdd() throws Exception {
+       Product produto = Creators.createProdutoNewAdd();
+       ShoppingCart shoppingCart = Creators.shoppingCartAndProductCart(StatusCart.OPEN);
+       ProductCreateDTO productCreateDTO = Creators.productCreateDTO(shoppingCart);
+
+       ShoppingCartItens iten = ShoppingCartItens.builder().shoppingCart(shoppingCart).product(produto).quantity(productCreateDTO.getQuantidade()).build();
+       Mockito.when(this.shopCartRepository.findById(ArgumentMatchers.any())).thenReturn(Optional.of(shoppingCart));
+       Mockito.when(this.productService.findById(ArgumentMatchers.any())).thenReturn(Optional.of(produto));
+       Mockito.when(this.itensService.findAllItensByShoppingCart(ArgumentMatchers.any()))
+               .thenReturn(shoppingCart.getItens());
+
+        Mockito.when(this.itensService.saveCartItem(ArgumentMatchers.any()))
+               .thenReturn(iten);
+     this.shopCartService.includeproductInCart(productCreateDTO);
+       
+
+   }
+
+   @Test
+   void whenPostincludeproductInCartProductErro() throws Exception {
+       ShoppingCart shoppingCart = Creators.shoppingCartAndProductCart(StatusCart.OPEN);
+       Mockito.when(this.shopCartRepository.findById(ArgumentMatchers.any())).thenReturn(Optional.of(shoppingCart));
+       ProductCreateDTO productCreateDTO = Creators.productCreateDTO(shoppingCart);
+       
+       assertThrows(InvalidCartException.class,
+               () -> this.shopCartService.includeproductInCart(productCreateDTO));
+   }
+
+
+   @Test
+   void whenPostincludeproductInCarErro() throws Exception {
+       ShoppingCart shoppingCart = Creators.shoppingCartAndProductCart(StatusCart.OPEN);
+       ProductCreateDTO productCreateDTO = Creators.productCreateDTO(shoppingCart);
+       assertThrows(InvalidCartException.class,
+               () -> this.shopCartService.includeproductInCart(productCreateDTO));
+   }
 }

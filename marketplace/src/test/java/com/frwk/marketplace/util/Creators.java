@@ -2,14 +2,18 @@ package com.frwk.marketplace.util;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import com.frwk.marketplace.customer.dto.CustomerDTO;
 import com.frwk.marketplace.customer.model.Customer;
+import com.frwk.marketplace.product.dto.ProductCreateDTO;
 import com.frwk.marketplace.product.dto.ProductDTO;
 import com.frwk.marketplace.product.model.Product;
 import com.frwk.marketplace.shoppingCart.dto.ShoppingCartCreatedDTO;
 import com.frwk.marketplace.shoppingCart.model.ShoppingCart;
+import com.frwk.marketplace.shoppingCart.model.ShoppingCartItens;
 import com.frwk.marketplace.shoppingCart.model.enums.StatusCart;
 
 public class Creators {
@@ -69,4 +73,39 @@ public class Creators {
         ShoppingCart cartAux = ShoppingCart.builder().id(id).status(status).build();
         return ShoppingCart.builder().id(id).status(status).customer(createCustomerNewCart(cartAux)).build();
     }
+
+    public static ShoppingCart shoppingCartAndProductCart(StatusCart status) {
+        UUID id = UUID.randomUUID();
+        ShoppingCart cartAux = ShoppingCart.builder().id(id).status(status).build();
+        return ShoppingCart.builder().id(id).status(status).customer(createCustomerNewCart(cartAux)).itens(
+                shoppingCartItensCartList(cartAux))
+                .build();
+    }
+
+    public static List<ShoppingCartItens> shoppingCartItensCartList(ShoppingCart cartAux) {
+
+        ShoppingCartItens shoppingCartItens = ShoppingCartItens.builder().id(1L).product(
+                createProduto()).quantity(5).shoppingCart(cartAux)
+                .build();
+        ArrayList<ShoppingCartItens> itens = new ArrayList();
+        itens.add(shoppingCartItens);
+        return itens;
+    }
+
+    
+    public static ProductCreateDTO productCreateDTO (ShoppingCart cart) {
+        return ProductCreateDTO.builder().idProduto("988766").idCarrinho(cart.getId().toString()).quantidade(5).build();
+    }
+    
+
+    public static Product createProduto() {
+        return Product.builder().id(988766L).price(10.0).build();
+    }
+    
+    public static Product createProdutoNewAdd() {
+        return Product.builder().id(111111L).price(10.0).build();
+    }
+
+
+
 }

@@ -94,7 +94,7 @@ public class ShoppingCartService {
                 productCreateDTO.getQuantidade()).build());
     }
 
-    private ShoppingCart shoppingCartIsPresentOrValid(String idCart) throws InvalidCartException {
+     ShoppingCart shoppingCartIsPresentOrValid(String idCart) throws InvalidCartException {
         Optional<ShoppingCart> optCart;
         try {
             optCart = this.repository.findById(UUID.fromString(idCart));
@@ -114,7 +114,7 @@ public class ShoppingCartService {
         return optCart.get();
     }
 
-    private Product productIsPresentOrValid(Long idProduct) throws InvalidCartException {
+    public Product productIsPresentOrValid(Long idProduct) throws InvalidCartException {
         Optional<Product> optProduct;
         try {
             optProduct = this.productService.findById(idProduct);

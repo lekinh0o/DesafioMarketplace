@@ -20,8 +20,12 @@ import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import com.frwk.marketplace.core.exceptions.handler.RestExceptionHandler;
 import com.frwk.marketplace.customer.dto.CustomerDTO;
+import com.frwk.marketplace.product.dto.ProductCreateDTO;
+import com.frwk.marketplace.product.model.Product;
 import com.frwk.marketplace.shoppingCart.dto.ShoppingCartCreatedDTO;
+import com.frwk.marketplace.shoppingCart.model.ShoppingCart;
 import com.frwk.marketplace.shoppingCart.model.enums.StatusCart;
+import com.frwk.marketplace.shoppingCart.service.ShoppingCartItensService;
 import com.frwk.marketplace.shoppingCart.service.ShoppingCartService;
 import com.frwk.marketplace.util.Creators;
 import com.frwk.marketplace.util.MappingJsonConvertion;
@@ -37,6 +41,9 @@ public class ShoppingCartControllerTest {
 
     @Mock
     private ShoppingCartService shopCartService;
+    
+    @Mock
+    private ShoppingCartItensService itensService;
 
     @BeforeEach
     void setUp() {
@@ -84,6 +91,19 @@ public class ShoppingCartControllerTest {
                 .andExpect(jsonPath("$.message").value("Dados enviados inválidos"))
                 .andExpect(jsonPath("$.erros.[0].field").value("cpf"))
                 .andExpect(jsonPath("$.erros.[0].error").value("O campo 'cpf' é obrigatório"));
+    }
+
+    @Test
+    void whenPostincludeproductInCart() throws Exception {
+        Mockito.doNothing().when(this.shopCartService).includeproductInCart(ArgumentMatchers.any());
+        ShoppingCart shoppingCart = Creators.shoppingCartAndProductCart(StatusCart.OPEN); 
+        ProductCreateDTO productCreateDTO = Creators.productCreateDTO(shoppingCart);
+
+        this.mockMvc.perform(post(API+"/"+"produto")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(MappingJsonConvertion.objectMapper(
+                        productCreateDTO)))
+                .andExpect(status().isOk());
     }
     
 }
