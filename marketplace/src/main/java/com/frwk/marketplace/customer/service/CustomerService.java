@@ -58,4 +58,12 @@ public class CustomerService {
                 .stream().map(customer -> this.mapper.mapEntityFromDTO(customer))
                 .collect(Collectors.toList());
     }
+    
+    public Customer findByIdentificationCodeEntity(String code) throws InvalidClientException {
+        return this.repository.findByIdentificationCode(code);
+    }
+
+    public Customer saveEntity(Customer customer) {
+        return this.repository.save(customer);
+    }
 }

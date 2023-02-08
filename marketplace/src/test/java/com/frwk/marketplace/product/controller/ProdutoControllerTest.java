@@ -1,7 +1,6 @@
 package com.frwk.marketplace.product.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -11,7 +10,6 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -23,11 +21,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import com.frwk.marketplace.core.exceptions.handler.RestExceptionHandler;
-import com.frwk.marketplace.customer.dto.CustomerDTO;
 import com.frwk.marketplace.product.dto.ProductDTO;
 import com.frwk.marketplace.product.service.ProductService;
 import com.frwk.marketplace.util.Creators;
-import com.frwk.marketplace.util.MappingJsonConvertion;
 
 @ExtendWith(MockitoExtension.class)
 public class ProdutoControllerTest {
