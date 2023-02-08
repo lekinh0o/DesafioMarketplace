@@ -1,20 +1,16 @@
 <img src="https://raw.githubusercontent.com/MicaelliMedeiros/micaellimedeiros/master/image/computer-illustration.png" min-width="400px" max-width="400px" width="400px" align="right" alt="Computador iuriCode">
 
 <p align="left"> 
- Olá que bom ter voce aqui primeiro gostaria de agradecer por me dar a oprtunidade de aprimorar meus conhecimento .
- 
- Vamos la primeiro devemos clonar nosso repositorio!
- Foi!!!!
- Agora 
- Agora vamos falar um pouco do que se trata este dessafio.
- Se trata de um carrinho de compras com metodos pre definidos para seu funcionamento!
- agora apos clonar e repositorio entre ate a pasta <kbd>Path/marketplace/</kbd>abra o terminal e execute primeiro este comando <kbd>mvn package</kbd>
+Olá que bom ter você aqui, primeiro gostaria de agradecer por me dar a oportunidade de aprimorar meu conhecimento.
+
+Vamos la primeiro devemos clonar nosso repositório! Foi!!!! Agora vamos falar um pouco do que se trata este desafio. Se trata de um carrinho de compras com métodos pre definidos para seu funcionamento! 
+ Agora após clonar e repositório entre até a pasta <kbd>Path/marketplace/</kbd> abra o terminal e execute primeiro este comando <kbd>mvn package</kbd>
  e se tudo ficar verdinho  execute este aqui  <kbd> ./mvnw spring-boot:run </kbd>
- o projeto esta em
+  o projeto esta em foi desenvolvido em ->
 </p>
 
 <p align="left">
-  Linguagens: < JAVA 8, SPRING BOOT, MAVEN>  Banco H2 .</strong>
+  < JAVA 8, SPRING BOOT, MAVEN>  Banco H2 .</strong>
 </p>
 
 <p align="left">
@@ -30,7 +26,7 @@
 </p>
 
 <p align="left">
-  Boas compras 
+  Boas compras!!!
 </p>
 
 </p>  
