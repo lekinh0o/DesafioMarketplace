@@ -124,7 +124,7 @@ public class ShoppingCartControllerTest {
     }
     
     @Test
-    void whenPostCalledToCloseValidClosedCart() throws Exception {
+    void whenPostValidClosedCartIsCloseTruee() throws Exception {
         ShoppingCart shoppingCart = Creators.shoppingCartAndProductCart(StatusCart.OPEN);
         Mockito.when(this.shopCartService.closeShoppingCart((ArgumentMatchers.any())))
                 .thenThrow(new InvalidCartException("Carrinho informado ja se encontra fechado"));
@@ -136,7 +136,7 @@ public class ShoppingCartControllerTest {
     }
 
     @Test
-    void whenPostCalledToCloseInvalidCart() throws Exception {
+    void whenPostValidClosedCartNotAceptd() throws Exception {
         ShoppingCart shoppingCart = Creators.shoppingCartAndProductCart(StatusCart.OPEN);
         Mockito.when(this.shopCartService.closeShoppingCart((ArgumentMatchers.any())))
                 .thenThrow(new InvalidCartException("Carrinho informado é inválido"));
@@ -148,7 +148,7 @@ public class ShoppingCartControllerTest {
     }
 
     @Test
-    void whenPostCalledToCloseValidEmptyCart() throws Exception {
+    void whenPostValidClosedCartIsEmptyProduct() throws Exception {
         ShoppingCart shoppingCart = Creators.shoppingCartAndProductCart(StatusCart.OPEN);
         Mockito.when(this.shopCartService.closeShoppingCart((ArgumentMatchers.any())))
                 .thenThrow(new InvalidCartException("O carrinho não possui produtos"));

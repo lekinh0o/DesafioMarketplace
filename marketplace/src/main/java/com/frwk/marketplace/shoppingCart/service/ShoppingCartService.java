@@ -61,7 +61,7 @@ public class ShoppingCartService {
 
     private ShoppingCart isShoppingCartOpen(Customer customer) throws InvalidClientException {
         ShoppingCart cart = null;
-        if (customer.getShoppingCart() != null || !customer.getShoppingCart().isEmpty()) {
+        if ( customer.getShoppingCart() != null && !customer.getShoppingCart().isEmpty()) {
             cart = customer.getShoppingCart().stream()
                     .filter(c -> !c.getStatus().equals(StatusCart.CLOSED))
                     .findFirst().orElse(null);
