@@ -48,7 +48,7 @@ public class ShoppingCartController implements ShoppingCartApi {
     @Override
     @PostMapping("/fechar/{idCarrinho}")
     public ResponseEntity<ShoppingCartCloseDTO> closeShoppingCart(@PathVariable String idCarrinho) throws InvalidCartException {
-        return new ResponseEntity<>(this.shoppingCartService.closeShoppingCart(idCarrinho),HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(this.shoppingCartService.closeShoppingCart(idCarrinho),HttpStatus.OK);
     }
 
 }

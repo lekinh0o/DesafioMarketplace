@@ -37,9 +37,9 @@ public class ShoppingCartService {
     private ShoppingCartItensService itensService;
 
     private CustomerService customerService;
-    
+
     private ProductService productService;
-    
+
     private CustomerMapper customerMapper;
 
     private ShoppingCartItensMapper shoppingCartItensMapper;
@@ -61,21 +61,23 @@ public class ShoppingCartService {
 
     private ShoppingCart isShoppingCartOpen(Customer customer) throws InvalidClientException {
         ShoppingCart cart = null;
-        if (customer.getShoppingCart() == null || customer.getShoppingCart().isEmpty()) {
-            cart = this.repository.save(ShoppingCart.builder().id(
-                    UUID.randomUUID()).customer(customer).status(StatusCart.OPEN_NEW).build());
-            ArrayList<ShoppingCart> carts = new ArrayList();
-            carts.add(cart);
-            customer.setShoppingCart(carts);
-            this.customerService.saveEntity(customer);
-            return cart;
-        }
-        cart = customer.getShoppingCart().stream()
-                .filter(c -> !c.getStatus().equals(StatusCart.CLOSED))
-                .findFirst().orElse(null);
-        cart.setStatus(StatusCart.OPEN);
-        return this.repository.save(cart);
+        if (customer.getShoppingCart() != null || !customer.getShoppingCart().isEmpty()) {
+            cart = customer.getShoppingCart().stream()
+                    .filter(c -> !c.getStatus().equals(StatusCart.CLOSED))
+                    .findFirst().orElse(null);
 
+        }
+        if (cart != null) {
+            cart.setStatus(StatusCart.OPEN);
+            return this.repository.save(cart);
+        }
+        cart = this.repository.save(ShoppingCart.builder().id(
+                UUID.randomUUID()).customer(customer).status(StatusCart.OPEN_NEW).build());
+        ArrayList<ShoppingCart> carts = new ArrayList();
+        carts.add(cart);
+        customer.setShoppingCart(carts);
+        this.customerService.saveEntity(customer);
+        return cart;
     }
 
     public void includeproductInCart(ProductCreateDTO productCreateDTO) throws InvalidCartException {
@@ -94,7 +96,7 @@ public class ShoppingCartService {
                 productCreateDTO.getQuantidade()).build());
     }
 
-     ShoppingCart shoppingCartIsPresentOrValid(String idCart) throws InvalidCartException {
+    ShoppingCart shoppingCartIsPresentOrValid(String idCart) throws InvalidCartException {
         Optional<ShoppingCart> optCart;
         try {
             optCart = this.repository.findById(UUID.fromString(idCart));

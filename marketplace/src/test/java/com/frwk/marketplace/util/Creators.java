@@ -2,8 +2,8 @@ package com.frwk.marketplace.util;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import com.frwk.marketplace.customer.dto.CustomerDTO;
@@ -11,7 +11,9 @@ import com.frwk.marketplace.customer.model.Customer;
 import com.frwk.marketplace.product.dto.ProductCreateDTO;
 import com.frwk.marketplace.product.dto.ProductDTO;
 import com.frwk.marketplace.product.model.Product;
+import com.frwk.marketplace.shoppingCart.dto.ShoppingCartCloseDTO;
 import com.frwk.marketplace.shoppingCart.dto.ShoppingCartCreatedDTO;
+import com.frwk.marketplace.shoppingCart.dto.ShoppingCartItensCloseDTO;
 import com.frwk.marketplace.shoppingCart.model.ShoppingCart;
 import com.frwk.marketplace.shoppingCart.model.ShoppingCartItens;
 import com.frwk.marketplace.shoppingCart.model.enums.StatusCart;
@@ -106,6 +108,14 @@ public class Creators {
         return Product.builder().id(111111L).price(10.0).build();
     }
 
+    public static ShoppingCartCloseDTO shoppingCartCloseDTO(ShoppingCart shoppingCart) {
+        return ShoppingCartCloseDTO.builder().customer(createValidCustomerDTO()).idShoppingCart(shoppingCart.getId().toString()).itens(
+                shoppingCartIntensCloseDTO()).build();
+    }
 
+    public static List<ShoppingCartItensCloseDTO> shoppingCartIntensCloseDTO() {
+        return Collections.singletonList( ShoppingCartItensCloseDTO.builder().produto( createProductDTO()).quantidade(10).build());
+
+    }
 
 }

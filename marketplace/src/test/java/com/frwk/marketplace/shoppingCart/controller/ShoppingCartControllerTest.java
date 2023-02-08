@@ -4,6 +4,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.UUID;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,10 +20,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
+import com.frwk.marketplace.core.exceptions.InvalidCartException;
 import com.frwk.marketplace.core.exceptions.handler.RestExceptionHandler;
 import com.frwk.marketplace.customer.dto.CustomerDTO;
 import com.frwk.marketplace.product.dto.ProductCreateDTO;
-import com.frwk.marketplace.product.model.Product;
+import com.frwk.marketplace.shoppingCart.dto.ShoppingCartCloseDTO;
 import com.frwk.marketplace.shoppingCart.dto.ShoppingCartCreatedDTO;
 import com.frwk.marketplace.shoppingCart.model.ShoppingCart;
 import com.frwk.marketplace.shoppingCart.model.enums.StatusCart;
@@ -105,5 +108,54 @@ public class ShoppingCartControllerTest {
                         productCreateDTO)))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    void whencloseShoppingCart() throws Exception {
+        ShoppingCart shoppingCart = Creators.shoppingCartAndProductCart(StatusCart.OPEN); 
+        ShoppingCartCloseDTO shoppingCartCloseDTO = Creators.shoppingCartCloseDTO(shoppingCart);
+         Mockito.when(this.shopCartService.closeShoppingCart(ArgumentMatchers.any())).thenReturn(shoppingCartCloseDTO);
+        this.mockMvc.perform(post(API + "/fechar/"+shoppingCart.getId().toString())
+                .contentType(""))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.idCarrinho").value(shoppingCart.getId().toString()))
+                .andExpect(jsonPath("$.cliente.cpf").value(shoppingCart.getCustomer().getIdentificationCode()))
+                .andExpect(jsonPath("$.itens.[0].quantidade").value((10)))
+                .andExpect(jsonPath("$.itens.[0].produto.nome").value("BALA"));
+    }
     
+    @Test
+    void whenPostCalledToCloseValidClosedCart() throws Exception {
+        ShoppingCart shoppingCart = Creators.shoppingCartAndProductCart(StatusCart.OPEN);
+        Mockito.when(this.shopCartService.closeShoppingCart((ArgumentMatchers.any())))
+                .thenThrow(new InvalidCartException("Carrinho informado ja se encontra fechado"));
+
+        this.mockMvc.perform(post(API + "/fechar/" + shoppingCart.getId().toString()))
+                .andExpect(status().isPreconditionFailed())
+                .andExpect(jsonPath("$.type").value("InvalidCartException"))
+                .andExpect(jsonPath("$.message").value("Carrinho informado ja se encontra fechado"));
+    }
+
+    @Test
+    void whenPostCalledToCloseInvalidCart() throws Exception {
+        ShoppingCart shoppingCart = Creators.shoppingCartAndProductCart(StatusCart.OPEN);
+        Mockito.when(this.shopCartService.closeShoppingCart((ArgumentMatchers.any())))
+                .thenThrow(new InvalidCartException("Carrinho informado é inválido"));
+
+        this.mockMvc.perform(post(API + "/fechar/" + shoppingCart.getId().toString()))
+                .andExpect(status().isPreconditionFailed())
+                .andExpect(jsonPath("$.type").value("InvalidCartException"))
+                .andExpect(jsonPath("$.message").value ("Carrinho informado é inválido"));
+    }
+
+    @Test
+    void whenPostCalledToCloseValidEmptyCart() throws Exception {
+        ShoppingCart shoppingCart = Creators.shoppingCartAndProductCart(StatusCart.OPEN);
+        Mockito.when(this.shopCartService.closeShoppingCart((ArgumentMatchers.any())))
+                .thenThrow(new InvalidCartException("O carrinho não possui produtos"));
+
+        this.mockMvc.perform(post(API + "/fechar/" + shoppingCart.getId().toString()))
+                .andExpect(status().isPreconditionFailed())
+                .andExpect(jsonPath("$.type").value("InvalidCartException"))
+                .andExpect(jsonPath("$.message").value("O carrinho não possui produtos"));
+    }
 }

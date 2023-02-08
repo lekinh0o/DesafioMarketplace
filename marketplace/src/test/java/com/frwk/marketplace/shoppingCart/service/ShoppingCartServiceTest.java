@@ -2,7 +2,6 @@ package com.frwk.marketplace.shoppingCart.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Optional;
 
@@ -31,7 +30,9 @@ import com.frwk.marketplace.customer.service.CustomerService;
 import com.frwk.marketplace.product.dto.ProductCreateDTO;
 import com.frwk.marketplace.product.model.Product;
 import com.frwk.marketplace.product.service.ProductService;
+import com.frwk.marketplace.shoppingCart.dto.ShoppingCartCloseDTO;
 import com.frwk.marketplace.shoppingCart.dto.ShoppingCartCreatedDTO;
+import com.frwk.marketplace.shoppingCart.mapper.ShoppingCartItensMapper;
 import com.frwk.marketplace.shoppingCart.model.ShoppingCart;
 import com.frwk.marketplace.shoppingCart.model.ShoppingCartItens;
 import com.frwk.marketplace.shoppingCart.model.enums.StatusCart;
@@ -60,7 +61,9 @@ public class ShoppingCartServiceTest {
 
     @Mock
     private CustomerMapper customerMapper;
-
+    
+    @Mock
+    private ShoppingCartItensMapper shoppingCartItensMapper;
 
     @BeforeEach
     void setUp() {
@@ -120,7 +123,6 @@ public class ShoppingCartServiceTest {
     void whenCreateShoppingCartCartCustomerCartNull() throws Exception {
         CustomerDTO customerDTO = Creators.createValidCustomerDTO();
         ShoppingCart cart = Creators.shoppingCartNewCart(StatusCart.OPEN_NEW);
-        ShoppingCartCreatedDTO carCreattDTO = Creators.shoppingCartDTOCreateNewCart(StatusCart.OPEN_NEW, cart.getId());
         Customer customer = Creators.createCustomer();
         Mockito.when(this.customerService.findByIdentificationCodeEntity(ArgumentMatchers.any()))
                 .thenReturn(null, customer);
@@ -132,7 +134,7 @@ public class ShoppingCartServiceTest {
    }
 
    @Test
-   void whenPostincludeproductInCart() throws Exception {
+   void whenPostIncludeproductInCart() throws Exception {
        Product produto = Creators.createProduto();
        ShoppingCart shoppingCart = Creators.shoppingCartAndProductCart(StatusCart.OPEN);
        Mockito.when(this.shopCartRepository.findById(ArgumentMatchers.any())).thenReturn(Optional.of(shoppingCart));
@@ -145,7 +147,7 @@ public class ShoppingCartServiceTest {
    }
 
    @Test
-   void whenPostincludeproductInCartNewAdd() throws Exception {
+   void whenPostIncludeproductInCartNewAdd() throws Exception {
        Product produto = Creators.createProdutoNewAdd();
        ShoppingCart shoppingCart = Creators.shoppingCartAndProductCart(StatusCart.OPEN);
        ProductCreateDTO productCreateDTO = Creators.productCreateDTO(shoppingCart);
@@ -181,4 +183,21 @@ public class ShoppingCartServiceTest {
        assertThrows(InvalidCartException.class,
                () -> this.shopCartService.includeproductInCart(productCreateDTO));
    }
+
+   @Test
+   void whenPostSloseShoppingCart() throws Exception {
+       Product produto = Creators.createProduto();
+       ShoppingCart shoppingCart = Creators.shoppingCartAndProductCart(StatusCart.OPEN);
+       ShoppingCartCloseDTO shoppingCartCloseDTO = Creators.shoppingCartCloseDTO(shoppingCart);
+       Mockito.when(this.productService.findById(ArgumentMatchers.any())).thenReturn(Optional.of(produto));
+       Mockito.when(this.shopCartRepository.findById(ArgumentMatchers.any())).thenReturn(Optional.of(shoppingCart));
+       Mockito.when(this.itensService.findAllItensByShoppingCart(ArgumentMatchers.any()))
+               .thenReturn(shoppingCart.getItens());
+       Mockito.when(this.customerMapper.mapEntityFromDTO(ArgumentMatchers.any())).thenReturn(shoppingCartCloseDTO.getCustomer());
+       Mockito.when(this.shoppingCartItensMapper.mapEntityFromDTO(ArgumentMatchers.any())).thenReturn(shoppingCartCloseDTO.getItens().get(0));
+               ShoppingCartCloseDTO retorno = this.shopCartService.closeShoppingCart(shoppingCart.getId().toString());
+      
+       assertEquals(retorno ,shoppingCartCloseDTO);
+   }
+
 }
