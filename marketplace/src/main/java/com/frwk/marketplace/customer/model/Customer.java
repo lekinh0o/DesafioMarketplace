@@ -14,7 +14,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import com.frwk.marketplace.shoppingCart.model.shoppingCart.ShoppingCart;
+import com.frwk.marketplace.shoppingCart.model.ShoppingCart;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

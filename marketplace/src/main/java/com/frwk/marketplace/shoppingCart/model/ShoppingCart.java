@@ -1,4 +1,4 @@
-package com.frwk.marketplace.shoppingCart.model.shoppingCart;
+package com.frwk.marketplace.shoppingCart.model;
 
 import java.util.List;
 import java.util.UUID;

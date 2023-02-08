@@ -1,4 +1,4 @@
-package com.frwk.marketplace.shoppingCart.model.shoppingCart;
+package com.frwk.marketplace.shoppingCart.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,7 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.frwk.marketplace.shoppingCart.model.product.Product;
+import com.frwk.marketplace.product.model.Product;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,4 +1,4 @@
-package com.frwk.marketplace.shoppingCart.model.product;
+package com.frwk.marketplace.product.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
