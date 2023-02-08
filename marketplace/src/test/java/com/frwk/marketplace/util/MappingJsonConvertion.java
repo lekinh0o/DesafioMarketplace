@@ -1,4 +1,4 @@
-package com.frwk.marketplace.customer.util;
+package com.frwk.marketplace.util;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

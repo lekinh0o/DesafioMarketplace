@@ -29,7 +29,7 @@ import com.frwk.marketplace.customer.dto.CustomerDTO;
 import com.frwk.marketplace.customer.mappers.CustomerMapper;
 import com.frwk.marketplace.customer.model.Customer;
 import com.frwk.marketplace.customer.repository.CustomerRepository;
-import com.frwk.marketplace.customer.util.Creators;
+import com.frwk.marketplace.util.Creators;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)

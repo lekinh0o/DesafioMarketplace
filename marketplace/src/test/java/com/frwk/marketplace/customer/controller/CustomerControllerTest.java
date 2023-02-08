@@ -26,8 +26,8 @@ import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 import com.frwk.marketplace.core.exceptions.handler.RestExceptionHandler;
 import com.frwk.marketplace.customer.dto.CustomerDTO;
 import com.frwk.marketplace.customer.service.CustomerService;
-import com.frwk.marketplace.customer.util.Creators;
-import com.frwk.marketplace.customer.util.MappingJsonConvertion;
+import com.frwk.marketplace.util.Creators;
+import com.frwk.marketplace.util.MappingJsonConvertion;
 
 @ExtendWith(MockitoExtension.class)
 public class CustomerControllerTest {
