@@ -31,7 +31,7 @@ public class ShoppingCartService {
     public ShoppingCartCreatedDTO createShoppingCart(CustomerDTO dto) throws InvalidClientException {
         Customer customer = this.customerService.findByIdentificationCodeEntity(dto.getCpf());
         if (customer == null) {
-            this.customerMapper.mapDTOFromEntity(this.customerService.createCustomer(dto));
+            this.customerService.createCustomer(dto);
             customer = this.customerService.findByIdentificationCodeEntity(dto.getCpf());
         }
         ShoppingCart cart = this.isShoppingCartOpen(customer);
@@ -45,21 +45,21 @@ public class ShoppingCartService {
 
     private ShoppingCart isShoppingCartOpen(Customer customer) throws InvalidClientException {
         ShoppingCart cart = null;
-        if (customer.getShoppingCart() != null && !customer.getShoppingCart().isEmpty()) {
-            cart = customer.getShoppingCart().stream()
-                    .filter(c -> c.getStatus().equals(StatusCart.OPEN))
-                    .findFirst().orElse(null);
-        }
-        if (cart != null) {
+        if (customer.getShoppingCart() == null || customer.getShoppingCart().isEmpty()) {
+            cart = this.repository.save(ShoppingCart.builder().id(
+                    UUID.randomUUID()).customer(customer).status(StatusCart.OPEN_NEW).build());
+            ArrayList<ShoppingCart> carts = new ArrayList();
+            carts.add(cart);
+            customer.setShoppingCart(carts);
+            this.customerService.saveEntity(customer);
             return cart;
         }
-        cart = this.repository.save(ShoppingCart.builder().id(
-                UUID.randomUUID()).customer(customer).status(StatusCart.OPEN_NEW).build());
-        ArrayList<ShoppingCart> carts = new ArrayList();
-        carts.add(cart);
-        customer.setShoppingCart(carts);
-        this.customerService.saveEntity(customer);
-        return cart;
+        cart = customer.getShoppingCart().stream()
+                .filter(c -> !c.getStatus().equals(StatusCart.CLOSED))
+                .findFirst().orElse(null);
+        cart.setStatus(StatusCart.OPEN);
+        return this.repository.save(cart);
+
     }
 
 }
