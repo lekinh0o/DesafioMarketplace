@@ -3,6 +3,7 @@ package com.frwk.marketplace.shoppingCart.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.frwk.marketplace.core.exceptions.GeneralException;
@@ -11,6 +12,7 @@ import com.frwk.marketplace.core.exceptions.InvalidClientException;
 import com.frwk.marketplace.core.exceptions.InvalidProductException;
 import com.frwk.marketplace.customer.dto.CustomerDTO;
 import com.frwk.marketplace.product.dto.ProductCreateDTO;
+import com.frwk.marketplace.shoppingCart.dto.ShoppingCartCloseDTO;
 import com.frwk.marketplace.shoppingCart.dto.ShoppingCartCreatedDTO;
 
 import io.swagger.annotations.Api;
@@ -42,6 +44,18 @@ public interface ShoppingCartApi {
         })
         ResponseEntity<Void> includeproductInCart(@RequestBody @Validated ProductCreateDTO body)
                         throws InvalidCartException;
+
+        
+        @ApiOperation(value = "Operação para fechar um carrinho")
+        @ApiResponses(value = {
+                        @ApiResponse(code = 200, message = "Retorna dados do carinho fechado"),
+                        @ApiResponse(code = 412, message = "Carrinho informado é inválido", response = InvalidCartException.class),
+                        @ApiResponse(code = 412, message = "Carrinho informado ja se encontra fechado", response = InvalidCartException.class),
+                        @ApiResponse(code = 412, message = "O carrinho não possui produtos.", response = InvalidCartException.class),
+        })
+        ResponseEntity<ShoppingCartCloseDTO> closeShoppingCart(@PathVariable String idCarrinho) 
+                        throws InvalidCartException;
+
 
 
 }

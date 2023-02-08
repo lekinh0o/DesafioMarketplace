@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,12 +12,15 @@ import org.springframework.stereotype.Service;
 import com.frwk.marketplace.core.exceptions.InvalidCartException;
 import com.frwk.marketplace.core.exceptions.InvalidClientException;
 import com.frwk.marketplace.customer.dto.CustomerDTO;
+import com.frwk.marketplace.customer.mappers.CustomerMapper;
 import com.frwk.marketplace.customer.model.Customer;
 import com.frwk.marketplace.customer.service.CustomerService;
 import com.frwk.marketplace.product.dto.ProductCreateDTO;
 import com.frwk.marketplace.product.model.Product;
 import com.frwk.marketplace.product.service.ProductService;
+import com.frwk.marketplace.shoppingCart.dto.ShoppingCartCloseDTO;
 import com.frwk.marketplace.shoppingCart.dto.ShoppingCartCreatedDTO;
+import com.frwk.marketplace.shoppingCart.mapper.ShoppingCartItensMapper;
 import com.frwk.marketplace.shoppingCart.model.ShoppingCart;
 import com.frwk.marketplace.shoppingCart.model.ShoppingCartItens;
 import com.frwk.marketplace.shoppingCart.model.enums.StatusCart;
@@ -33,8 +37,12 @@ public class ShoppingCartService {
     private ShoppingCartItensService itensService;
 
     private CustomerService customerService;
-
+    
     private ProductService productService;
+    
+    private CustomerMapper customerMapper;
+
+    private ShoppingCartItensMapper shoppingCartItensMapper;
 
     public ShoppingCartCreatedDTO createShoppingCart(CustomerDTO dto) throws InvalidClientException {
         Customer customer = this.customerService.findByIdentificationCodeEntity(dto.getCpf());
@@ -69,7 +77,7 @@ public class ShoppingCartService {
         return this.repository.save(cart);
 
     }
-    
+
     public void includeproductInCart(ProductCreateDTO productCreateDTO) throws InvalidCartException {
         ShoppingCart cart = this.shoppingCartIsPresentOrValid(productCreateDTO.getIdCarrinho());
         Product product = this.productIsPresentOrValid(Long.parseLong(productCreateDTO.getIdProduto()));
@@ -85,7 +93,7 @@ public class ShoppingCartService {
         this.itensService.saveCartItem(ShoppingCartItens.builder().shoppingCart(cart).product(product).quantity(
                 productCreateDTO.getQuantidade()).build());
     }
-    
+
     private ShoppingCart shoppingCartIsPresentOrValid(String idCart) throws InvalidCartException {
         Optional<ShoppingCart> optCart;
         try {
@@ -120,6 +128,20 @@ public class ShoppingCartService {
         }
 
         return optProduct.get();
+    }
+
+    public ShoppingCartCloseDTO closeShoppingCart(String idShoppingCart) throws InvalidCartException {
+        ShoppingCart cart = this.shoppingCartIsPresentOrValid(idShoppingCart);
+        List<ShoppingCartItens> itens = this.itensService.findAllItensByShoppingCart(cart);
+        if (itens == null || itens.isEmpty()) {
+            throw new InvalidCartException("O carrinho não possui produtos.");
+        }
+        cart.setStatus(StatusCart.CLOSED);
+        this.repository.save(cart);
+        return ShoppingCartCloseDTO.builder().idShoppingCart(cart.getId().toString())
+                .itens(itens.stream().map(item -> this.shoppingCartItensMapper.mapEntityFromDTO(item))
+                        .collect(Collectors.toList()))
+                .customer(this.customerMapper.mapEntityFromDTO(cart.getCustomer())).build();
     }
 
 }

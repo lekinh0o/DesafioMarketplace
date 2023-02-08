@@ -27,7 +27,7 @@ public class Creators {
 
     public static CustomerDTO createCustomerDTOInvalidCPF() {
 
-        return CustomerDTO.builder().nome(NOME).cpf("")
+        return CustomerDTO.builder().nome(NOME).cpf(null)
                 .dataNascimento(DATA)
                 .email(EMAIL).build();
     }
