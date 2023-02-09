@@ -5,7 +5,6 @@ import java.time.format.DateTimeFormatter;
 
 import org.springframework.stereotype.Component;
 
-import com.frwk.marketplace.core.exceptions.DateTimeParseException;
 import com.frwk.marketplace.core.exceptions.InvalidClientException;
 import com.frwk.marketplace.core.shared.ParserMapDTO;
 import com.frwk.marketplace.customer.dto.CustomerDTO;
