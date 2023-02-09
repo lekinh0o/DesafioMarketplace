@@ -1,6 +1,7 @@
 package com.frwk.marketplace.util;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -27,14 +28,15 @@ public class Creators {
     public final static String NOME_PRODUTO = "BALA";
 
     public static CustomerDTO createValidCustomerDTO() {
-        return CustomerDTO.builder().nome(NOME).cpf(CPF).dataNascimento(DATA)
+        return CustomerDTO.builder().nome(NOME).cpf(CPF).dataNascimento(getLocaldateToString(DATA))
                 .email(EMAIL).build();
     }
 
     public static CustomerDTO createCustomerDTOInvalidCPF() {
 
         return CustomerDTO.builder().nome(NOME).cpf(null)
-                .dataNascimento(DATA)
+                .dataNascimento(
+                        getLocaldateToString(DATA))
                 .email(EMAIL).build();
     }
 
@@ -118,4 +120,10 @@ public class Creators {
 
     }
 
+    private static String getLocaldateToString(LocalDate date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String dateString = date.format(formatter);
+
+        return dateString;
+    }
 }

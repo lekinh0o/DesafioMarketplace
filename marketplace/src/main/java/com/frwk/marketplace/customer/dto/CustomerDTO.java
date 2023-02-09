@@ -8,6 +8,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -41,10 +42,8 @@ public class CustomerDTO implements Serializable {
 
     @JsonProperty("dataNascimento")
     @NotNull(message = "O campo 'dataNascimento' é obrigatório")
-    @JsonSerialize(using = ToStringSerializer.class)
-    @JsonDeserialize(using = LocalDateDeserializer.class)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, locale = "en-US")
-    private LocalDate dataNascimento;
+    @JsonFormat(pattern = "dd-MM-yyyy")
+    private String dataNascimento;
 
     @JsonProperty("email")
     @Email(message = "O campo 'email' é obrigatório")

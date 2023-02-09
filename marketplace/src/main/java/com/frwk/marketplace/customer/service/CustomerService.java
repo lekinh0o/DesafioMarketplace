@@ -36,10 +36,7 @@ public class CustomerService {
     public CustomerDTO save(CustomerDTO customerDTO) throws InvalidClientException {
         Customer customer = this.repository.findByIdentificationCode(customerDTO.getCpf());
         if (customer != null) {
-            customer.setName(customerDTO.getNome());
-            customer.setBirthDate(customerDTO.getDataNascimento());
-            customer.setEmail(customerDTO.getEmail());
-            this.repository.save(customer);
+            this.repository.save(this.mapper.mapDTOFromEntity(customerDTO));
             return this.mapper.mapEntityFromDTO(this.repository.save(customer));
         }
         throw new InvalidClientException("Cliente não esta cadastrado na sistema");
